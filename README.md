@@ -1,9 +1,5 @@
-# QuickNote
+# Shell
 
-Fast no mouse noting tool.
-
-# How to
-
-Shift + Alt + C to open up the command window.
+custom commands (I just got call it a shell because it sounds cool)
 
 Enter a command or help for commands
