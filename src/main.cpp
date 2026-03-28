@@ -1,7 +1,3 @@
-#pragma comment(lib, "User32.lib")
-#pragma comment(lib, "Shell32.lib")
-#pragma comment(lib, "Ole32.lib")
-
 #define NOMINMAX
 #include <iostream>
 #include <windows.h>
@@ -25,7 +21,7 @@ class Program {
         void run() {
 
             struct{
-                std::string note = "note\nPARAMETERS (in order): {name} {text}\nCreate a .txt file containing input text\n";
+                std::string txt = "txt\nPARAMETERS (in order): {name} {text}\nCreate a .txt file containing input text\n";
                 std::string list = "list\nPARAMETERS N/A\nLists all files in Quicknote directory\n";
                 std::string read = "read\nPARAMETERS {filename}\nPrints a .txt files contents\nAdditional Information\nFile extension included\n";
             } help;
@@ -50,7 +46,7 @@ class Program {
                        }
                    }
 
-                   if (command == "note") {
+                   if (command == "txt") {
                        text = "";
                        std::string formatted;
                        std::cout << "Enter the name for your note\n";
@@ -112,7 +108,7 @@ class Program {
                         std::cin >> pageNumber;
 
                         if (pageNumber == 1) {
-                            std::cout << help.note;
+                            std::cout << help.txt;
                             std::cout << '\n';
 
                             std::cout << help.list;
