@@ -14,13 +14,21 @@
 
 class Program {
     public:
+        std::string fileName;
+        bool running = true;
+        std::string text;
+        std::string command;
+        std::string textReport;
+        int pageNumber;
+        std::string readFilename;
+
         void run() {
-            bool pressed = false;
-            std::string fileName;
-            bool running = true;
-            std::string text;
-            std::string command;
-            std::string textReport;
+
+            struct{
+                std::string note = "note\nPARAMETERS (in order): {name} {text}\nCreate a .txt file containing input text\n";
+                std::string list = "list\nPARAMETERS N/A\nLists all files in Quicknote directory\n";
+                std::string read = "read\nPARAMETERS {filename}\nPrints a .txt files contents\nAdditional Information\nFile extension included\n";
+            } help;
 
             char path[MAX_PATH];
             SHGetFolderPathA(NULL, CSIDL_DESKTOP, NULL, 0, path);
@@ -30,70 +38,99 @@ class Program {
             CreateDirectoryA(folder.c_str(), NULL);
 
             while (running == true) {
+                fileName = "";
+
                 bandaid_fix:
-                    if (GetAsyncKeyState(VK_LSHIFT) & 0x8000 && GetAsyncKeyState(VK_MENU) & 0x8000 && GetAsyncKeyState('C') & 0x8000 && !pressed) {
+                   std::getline(std::cin, command);
+                   std::transform(command.begin(), command.end(), command.begin(), [](unsigned char c) { return std::tolower(c); });
 
-                           pressed = true;
+                    if (command == "list") {
+                       for (const auto& file : std::filesystem::directory_iterator(folder)) {
+                           std::cout << file << '\n';
+                       }
+                   }
 
-                           HWND console = GetConsoleWindow();
-                           SetForegroundWindow(console);
-                           std::cout << "Enter your command (help for options)\n";
-                           std::getline(std::cin, command);
-                           std::transform(command.begin(), command.end(), command.begin(), [](unsigned char c) { return std::tolower(c); });
+                   if (command == "note") {
+                       text = "";
+                       std::string formatted;
+                       std::cout << "Enter the name for your note\n";
+                       std::cin >> fileName;
+                       std::cin.clear();
+                       std::ofstream File(folder + "\\" + fileName + ".txt");
+                       std::cout << "Enter your text\n";
+                       std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                       std::getline(std::cin, text);
 
-                           if (command == "exit") {
+                       for (size_t i = 0; i < text.length(); i++) {
+                           formatted += text[i];
+                           if ((i + 1) % 90 == 0) formatted += '\n';
+                       }
+                       text = formatted;  
+
+                       File << text;
+
+                       if (text.length() > 50) {
+                           for (int i = 0; i < 50; i++) {
+                               textReport += text[i];
+                           }
+
+                       std::cout << fileName << " created at " << folder + "\\" + fileName + ".txt" << " with text " << textReport << " (" << text.length() - textReport.length() << " excluded)";
+                       }
+
+                       else {
+                           std::cout << fileName << " created at " << folder + "\\" + fileName + ".txt" << "with text" << text;
+                       }
+
+                       File.close();
+                   }
+
+                   if (command == "read") {
+                       std::cin >> readFilename;
+                       if (std::filesystem::exists(folder + "\\" + readFilename + ".txt")) {
+                           std::string line;
+
+                           std::ifstream readFile(folder + "\\" + readFilename + ".txt");
+
+                           if (!readFile.is_open()) {
+                               std::cerr << "can't open file\n";
                                goto bandaid_fix;
                            }
 
-                           if (command == "list") {
-                               for (const auto& file : std::filesystem::directory_iterator(folder)) {
-                                   std::cout << file << "\n";
-                               }
+                           while (std::getline(readFile, line)) {
+                               std::cout << line << '\n';
                            }
 
-                           if (command == "note") {
-                               text = "";
-                               std::string formatted;
-                               std::cout << "Enter the name for your note\n";
-                               std::cin >> fileName;
-                               std::cin.clear();
-                               std::ofstream File(folder + "\\" + fileName + ".txt");
-                               std::cout << "Enter your text\n";
-                               std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                               std::getline(std::cin, text);
+                           readFile.close();
+                       }
 
-                               for (size_t i = 0; i < text.length(); i++) {
-                                   formatted += text[i];
-                                   if ((i + 1) % 90 == 0) formatted += '\n';
-                               }
-                               text = formatted;  
+                       else {
+                           std::cout << "invalid file\n";
+                       }
+                   }
 
-                               File << text;
+                   if (command == "help") {
+                        std::cin >> pageNumber;
 
-                               if (text.length() > 50) {
-                                   for (int i = 0; i < 50; i++) {
-                                       textReport += text[i];
-                                   }
-                               std::cout << fileName << " created at " << folder + "\\" + fileName + ".txt" << "with text" << textReport << " (" << text.length() - textReport.length() << " excluded)";
-                               }
+                        if (pageNumber == 1) {
+                            std::cout << help.note;
+                            std::cout << '\n';
 
-                               else {
-                                   std::cout << fileName << " created at " << folder + "\\" + fileName + ".txt" << "with text" << text;
-                               }
+                            std::cout << help.list;
+                            std::cout << '\n';
 
-                               File.close();
-                           }
+                            std::cout << help.read;
+                            std::cout << '\n';
+                        }
 
                         else {
-                            pressed = false;
+                            std::cout << "invalid page number\n"; // don't forget to enter 5 commands per page
+                        }
+                           }
                         }
                     }
-                }
-                return;
-            }
-};
+                };
 
 int main() {
-    Program copy;
-    copy.run();
+    Program main;
+    main.run();
 }
