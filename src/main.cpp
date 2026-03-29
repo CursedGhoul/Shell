@@ -58,7 +58,8 @@ class Program {
                     }
 
                     else if (command == "txt") {
-                        text = "";
+                        text.clear();
+                        textReport.clear();
                         std::cout << "Enter the name for your txt\n";
                         std::getline(std::cin, fileName);
                         std::cin.clear();
@@ -156,10 +157,8 @@ class Program {
                         for (size_t i = 0; i < text.length(); i++) {
                             formatted += text[i];
                             if ((i + 1) % 90 == 0) formatted += '\n';
-
-                            writeFile << formatted;
                         }
-
+                        writeFile << formatted;
                     }
 
                     else if (command == "new --folder" || command == "new -F") {
@@ -226,6 +225,11 @@ class Program {
                         else {
                             std::cout << "Invalid path" << '\n';
                         }
+                    }
+
+                    else if (command == "exit") {
+                        std::cerr << "exiting\n";
+                        running = false;
                     }
 
                     else if (command == "clear") {
