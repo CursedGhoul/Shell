@@ -166,7 +166,7 @@ class Program {
 
                     }
 
-                    else if (command == "new --folder" || "new -F") {
+                    else if (command == "new --folder" || command == "new -F") {
                         std::cin >> newfilename;
                         std::ofstream newFile(folder + "\\" + newfilename);
                         if (newFile.is_open()) {
