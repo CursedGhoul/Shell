@@ -52,7 +52,7 @@ class Program {
                        }
                    }
 
-                   if (command == "txt") {
+                   else if (command == "txt") {
                        text = "";
                        std::cout << "Enter the name for your txt\n";
                        std::cin >> fileName;
@@ -85,7 +85,7 @@ class Program {
                        File.close();
                    }
 
-                   if (command == "read") {
+                   else if (command == "read") {
                        std::cin >> readFilename;
                        if (std::filesystem::exists(folder + "\\" + readFilename + ".txt")) {
                            std::string line;
@@ -109,7 +109,7 @@ class Program {
                        }
                    }
 
-                   if (command == "help") {
+                   else if (command == "help") {
                         std::cin >> pageNumber;
 
                         if (pageNumber == 1) {
@@ -129,16 +129,16 @@ class Program {
                             std::cout << '\n';
                         }
 
-                        if (pageNumber == 2) {
+                        else if (pageNumber == 2) {
                             std::cout << help.flags << '\n';
                         }
 
-                        else {
+                        else { // else is mad at me
                             std::cout << "invalid page number\n"; // don't forget to enter 5 commands per page
                         }
                    }
 
-                   if (command == ("write --unformat")) {
+                   else if (command == ("write --unformat")) {
                        std::cin >> writePath;
 
                        std::ofstream writeFile(writePath);
@@ -149,7 +149,7 @@ class Program {
                        writeFile << text;
                    }
 
-                   if (command == "write") {
+                   else if (command == "write") {
                        std::cin >> writePath;
                        text = "";
 
@@ -166,7 +166,7 @@ class Program {
 
                    }
 
-                   if (command == "new") {
+                   else if (command == "new") {
                        std::cin >> newfilename;
                        std::ofstream newFile(newfilename);
                        if (newFile.is_open()) {
@@ -180,7 +180,11 @@ class Program {
                        }
                    }
 
+                   else {
+                       std::cout << "Syntax error";
                    }
+
+                   } // this code is the definition of confusing amounts of }
                 }
             };
 
