@@ -136,7 +136,7 @@ class Program {
                         }
                     }
 
-                    else if (command == "write --unformat" || command == "write -U") {
+                    else if (command.find("--unformat") || command.find("-U")) {
                         std::getline(std::cin, writePath);
 
                         std::ofstream writeFile(writePath);
@@ -161,7 +161,7 @@ class Program {
                         writeFile << formatted;
                     }
 
-                    else if (command == "new --folder" || command == "new -F") {
+                    else if (command.find("--folder") || command.find("-F") || command.find("new")) {
                         std::cin >> newfilename;
                         std::ofstream newFile(folder + "\\" + newfilename);
                         if (newFile.is_open()) {
