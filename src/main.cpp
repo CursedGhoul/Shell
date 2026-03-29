@@ -17,6 +17,9 @@ class Program {
         std::string textReport;
         int pageNumber;
         std::string readFilename;
+        std::string formatted;
+        std::string writePath;
+        std::string newfilename;
 
         void run() {
 
@@ -24,6 +27,9 @@ class Program {
                 std::string txt = "txt\nPARAMETERS (in order): {name} {text}\nCreate a .txt file containing input text\n";
                 std::string list = "list\nPARAMETERS N/A\nLists all files in Quicknote directory\n";
                 std::string read = "read\nPARAMETERS {filename}\nPrints a .txt files contents\nAdditional Information\nFile extension included\n";
+                std::string write = "write\nPARAMETERS {path} {text}\nWrites to a file\nAdditional Information\nInvalid flags are accepted as no flags\n";
+                std::string newFile = "new\nPARAMETERS {path}\nCreates a file\nAdditional Information\nInclude your file extension\n";
+                std::string flags = "Flags\nYou can find a full list of flags nowhere currently\n";
             } help;
 
             char path[MAX_PATH];
@@ -48,7 +54,6 @@ class Program {
 
                    if (command == "txt") {
                        text = "";
-                       std::string formatted;
                        std::cout << "Enter the name for your note\n";
                        std::cin >> fileName;
                        std::cin.clear();
@@ -116,15 +121,67 @@ class Program {
 
                             std::cout << help.read;
                             std::cout << '\n';
+
+                            std::cout << help.write;
+                            std::cout << '\n';
+
+                            std::cout << help.newFile;
+                            std::cout << '\n';
+                        }
+
+                        if (pageNumber == 2) {
+                            std::cout << help.flags << '\n';
                         }
 
                         else {
                             std::cout << "invalid page number\n"; // don't forget to enter 5 commands per page
                         }
-                           }
-                        }
-                    }
-                };
+                   }
+
+                   if (command == ("write --unformat")) {
+                       std::cin >> writePath;
+
+                       std::ofstream writeFile(writePath);
+                       std::cout << "Enter your text\n";
+                       std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                       std::getline(std::cin, text);
+
+                       writeFile << text;
+                   }
+
+                   if (command == "write") {
+                       std::cin >> writePath;
+                       text = "";
+
+                       std::ofstream writeFile(writePath);
+                       std::cout << "Enter your text\n";
+                       std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                       std::getline(std::cin, text);
+                       for (size_t i = 0; i < text.length(); i++) {
+                           formatted += text[i];
+                           if ((i + 1) % 90 == 0) formatted += '\n';
+
+                           writeFile << formatted;
+                       }
+
+                   }
+
+                   if (command == "new") {
+                       std::cin >> newfilename;
+                       std::ofstream newFile(newfilename);
+                       if (newFile.is_open()) {
+                           std::cout << "File created at" << newfilename;
+                           newFile.close();
+                       }
+
+                       else {
+                           std::cerr << "Failed to create file at " << newfilename << "\n";
+                           goto bandaid_fix;
+                       }
+                   }
+                }
+            }
+         };
 
 int main() {
     Program main;
