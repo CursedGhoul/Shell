@@ -43,160 +43,161 @@ class Program {
             CreateDirectoryA(folder.c_str(), NULL);
 
             while (running == true) {
-                fileName = "";
+                bandaid_fix:
+                    std::getline(std::cin, command);
+                    std::transform(command.begin(), command.end(), command.begin(), [](unsigned char c) { return std::tolower(c); });
 
-            bandaid_fix:
-                std::getline(std::cin, command);
-                std::transform(command.begin(), command.end(), command.begin(), [](unsigned char c) { return std::tolower(c); });
-
-                if (command == "list") {
-                    for (const auto& file : std::filesystem::directory_iterator(folder)) {
-                        std::cout << file << '\n';
+                    if (command == "list") {
+                        for (const auto& file : std::filesystem::directory_iterator(folder)) {
+                            std::cout << file << '\n';
+                        }
                     }
-                }
 
-                else if (command == "txt") {
-                    text = "";
-                    std::cout << "Enter the name for your txt\n";
-                    std::cin >> fileName;
-                    std::cin.clear();
-                    std::ofstream File(folder + "\\" + fileName + ".txt");
-                    std::cout << "Enter your text\n";
-                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                    std::getline(std::cin, text);
+                    else if (command == "txt") {
+                        text = "";
+                        std::cout << "Enter the name for your txt\n";
+                        std::getline(std::cin, fileName);
+                        std::cin.clear();
+                        std::ofstream File(folder + "\\" + fileName + ".txt");
+                        std::cout << "Enter your text\n";
+                        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                        std::getline(std::cin, text);
 
-                    for (size_t i = 0; i < text.length(); i++) {
-                        formatted += text[i];
-                        if ((i + 1) % 90 == 0) formatted += '\n';
-                    }
-                    text = formatted;
+                        for (size_t i = 0; i < text.length(); i++) {
+                            formatted += text[i];
+                            if ((i + 1) % 90 == 0) formatted += '\n';
+                        }
+                        text = formatted;
 
-                    File << text;
+                        File << text;
 
-                    if (text.length() > 50) {
-                        for (int i = 0; i < 50; i++) {
-                            textReport += text[i];
+                        if (text.length() > 50) {
+                            for (int i = 0; i < 50; i++) {
+                                textReport += text[i];
+                            }
+
+                            std::cout << fileName << " created at " << folder + "\\" + fileName + ".txt" << " with text " << textReport << " (" << text.length() - textReport.length() << " excluded)";
                         }
 
-                        std::cout << fileName << " created at " << folder + "\\" + fileName + ".txt" << " with text " << textReport << " (" << text.length() - textReport.length() << " excluded)";
+                        else {
+                            std::cout << fileName << " created at " << folder + "\\" + fileName + ".txt" << "with text" << text;
+                        }
+
+                        File.close();
                     }
 
-                    else {
-                        std::cout << fileName << " created at " << folder + "\\" + fileName + ".txt" << "with text" << text;
+                    else if (command == "read") {
+                        std::getline(std::cin, readFilename);
+                        if (std::filesystem::exists(folder + "\\" + readFilename + ".txt")) {
+                            std::string line;
+
+                            std::ifstream readFile(folder + "\\" + readFilename + ".txt");
+
+                            if (!readFile.is_open()) {
+                                std::cerr << "can't open file\n";
+                                goto bandaid_fix;
+                            }
+
+                            while (std::getline(readFile, line)) {
+                                std::cout << line << '\n';
+                            }
+
+                            readFile.close();
+                        }
+
+                        else {
+                            std::cout << "invalid file\n";
+                        }
                     }
 
-                    File.close();
-                }
+                    else if (command == "help") {
+                        std::cin >> pageNumber;
 
-                else if (command == "read") {
-                    std::cin >> readFilename;
-                    if (std::filesystem::exists(folder + "\\" + readFilename + ".txt")) {
-                        std::string line;
+                        if (pageNumber == 1) {
+                            std::cout << help.txt;
+                            std::cout << '\n';
 
-                        std::ifstream readFile(folder + "\\" + readFilename + ".txt");
+                            std::cout << help.list;
+                            std::cout << '\n';
 
-                        if (!readFile.is_open()) {
-                            std::cerr << "can't open file\n";
+                            std::cout << help.read;
+                            std::cout << '\n';
+
+                            std::cout << help.write; // if anybody knows how to iterate over a struct make a pr I'm too stupid for that
+                            std::cout << '\n';
+
+                            std::cout << help.newFile;
+                            std::cout << '\n';
+                        }
+
+                        else if (pageNumber == 2) {
+                            std::cout << help2.flags << '\n';
+                        }
+
+                        else {
+                            std::cout << "invalid page number\n"; // don't forget to enter 5 commands per page
+                        }
+                    }
+
+                    else if (command == "write --unformat" || command == "write -U") {
+                        std::getline(std::cin, writePath);
+
+                        std::ofstream writeFile(writePath);
+                        std::cout << "Enter your text\n";
+                        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                        std::getline(std::cin, text);
+
+                        writeFile << text;
+                    }
+
+                    else if (command == "write") {
+                        std::getline(std::cin, writePath);
+
+                        std::ofstream writeFile(writePath);
+                        std::cout << "Enter your text\n";
+                        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                        std::getline(std::cin, text);
+                        for (size_t i = 0; i < text.length(); i++) {
+                            formatted += text[i];
+                            if ((i + 1) % 90 == 0) formatted += '\n';
+
+                            writeFile << formatted;
+                        }
+
+                    }
+
+                    else if (command == "new --folder" || "new -F") {
+                        std::cin >> newfilename;
+                        std::ofstream newFile(folder + "\\" + newfilename);
+                        if (newFile.is_open()) {
+                            std::cout << "File sucessfully created at " << (folder + "\\" + newfilename) << '\n';
+                        }
+
+                        else {
+                            std::cout << "Failed to create file at " << (folder + "\\" + newfilename) << '\n';
+                        }
+                    }
+
+                    else if (command == "new") {
+                        std::getline(std::cin, newfilename);
+                        std::ofstream newFile(newfilename);
+                        if (newFile.is_open()) {
+                            std::cout << "File created at" << newfilename;
+                            newFile.close();
+                        }
+
+                        else {
+                            std::cout << "Failed to create file at " << newfilename << "\n";
                             goto bandaid_fix;
                         }
-
-                        while (std::getline(readFile, line)) {
-                            std::cout << line << '\n';
-                        }
-
-                        readFile.close();
                     }
 
-                    else {
-                        std::cout << "invalid file\n";
-                    }
-                }
-
-                else if (command == "help") {
-                    std::cin >> pageNumber;
-
-                    if (pageNumber == 1) {
-                        std::cout << help.txt;
-                        std::cout << '\n';
-
-                        std::cout << help.list;
-                        std::cout << '\n';
-
-                        std::cout << help.read;
-                        std::cout << '\n';
-
-                        std::cout << help.write; // if anybody knows how to iterate over a struct make a pr I'm too stupid for that
-                        std::cout << '\n';
-
-                        std::cout << help.newFile;
-                        std::cout << '\n';
+                    else if (command == "clear") {
+                        std::system("cls");
                     }
 
-                    else if (pageNumber == 2) {
-                        std::cout << help2.flags << '\n';
-                    }
-
-                    else {
-                        std::cout << "invalid page number\n"; // don't forget to enter 5 commands per page
-                    }
-                }
-
-                else if (command == "write --unformat" || command == "write -U") {
-                    std::cin >> writePath;
-
-                    std::ofstream writeFile(writePath);
-                    std::cout << "Enter your text\n";
-                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                    std::getline(std::cin, text);
-
-                    writeFile << text;
-                }
-
-                else if (command == "write") {
-                    std::cin >> writePath;
-                    text = "";
-
-                    std::ofstream writeFile(writePath);
-                    std::cout << "Enter your text\n";
-                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                    std::getline(std::cin, text);
-                    for (size_t i = 0; i < text.length(); i++) {
-                        formatted += text[i];
-                        if ((i + 1) % 90 == 0) formatted += '\n';
-
-                        writeFile << formatted;
-                    }
-
-                }
-
-                else if (command == "new --folder" || "new -F") {
-                    std::cin >> newfilename;
-                    std::ofstream newFile(folder + "\\" + newfilename);
-                    if (newFile.is_open()) {
-                        std::cout << "File sucessfully created at " << (folder + "\\" + newfilename) << '\n';
-                    }
-
-                    else {
-                        std::cout << "Failed to create file at " << (folder + "\\" + newfilename) << '\n';
-                    }
-                }
-
-                else if (command == "new") {
-                    std::cin >> newfilename;
-                    std::ofstream newFile(newfilename);
-                    if (newFile.is_open()) {
-                        std::cout << "File created at" << newfilename;
-                        newFile.close();
-                    }
-
-                    else {
-                        std::cerr << "Failed to create file at " << newfilename << "\n";
-                        goto bandaid_fix;
-                    }
-                }
-
-            } // this code is the definition of confusing amounts of }
-        }
+                } // this code is the definition of confusing amounts of }
+            }
 };
 
 int main() {
