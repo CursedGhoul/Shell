@@ -246,4 +246,5 @@ class Program {
 int main() {
     Program main;
     main.run();
+    return 0;
 }
