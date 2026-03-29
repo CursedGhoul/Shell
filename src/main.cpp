@@ -25,7 +25,7 @@ class Program {
 
             struct{
                 std::string txt = "txt\nPARAMETERS (in order): {name} {text}\nCreate a .txt file containing input text\n";
-                std::string list = "list\nPARAMETERS N/A\nLists all files in Quicknote directory\n";
+                std::string list = "list\nPARAMETERS N/A\nLists all files in shell directory\n";
                 std::string read = "read\nPARAMETERS {filename}\nPrints a .txt files contents\nAdditional Information\nFile extension included\n";
                 std::string write = "write\nPARAMETERS {path} {text}\nWrites to a file\nAdditional Information\nInvalid flags are accepted as no flags\n";
                 std::string newFile = "new\nPARAMETERS {path}\nCreates a file\nAdditional Information\nInclude your file extension\n";
