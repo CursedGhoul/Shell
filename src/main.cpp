@@ -20,6 +20,9 @@ class Program {
         std::string formatted;
         std::string writePath;
         std::string newfilename;
+        std::string newdirpath;
+        std::string newdirname;
+        std::string workingDirectory;
 
         void run() {
 
@@ -40,7 +43,7 @@ class Program {
 
             std::string folder = std::string(path) + "\\shell";
 
-            CreateDirectoryA(folder.c_str(), NULL);
+            std::filesystem::create_directory(folder);
 
             while (running == true) {
                 bandaid_fix:
@@ -189,6 +192,46 @@ class Program {
                         else {
                             std::cout << "Failed to create file at " << newfilename << "\n";
                             goto bandaid_fix;
+                        }
+                    }
+
+                    /* else if (command == "mkdir --folder" || command == "mkdir -F") {
+                        std::getline(std::cin, newdirname);
+                        newdirpath = folder + "\\";
+                        newdirpath += newdirname;
+                        if (std::filesystem::create_directory(newdirpath)) {
+                            std::cout << "Sucessfully created directory";
+                        }
+
+                        else {
+                            std::cout << "Directory already exists or other failure";
+                        }
+                    }
+
+                    else if (command == "mkdir") {
+                        std::getline(std::cin, newdirpath);
+                        if (std::filesystem::create_directory(newdirpath)) {
+                            std::cout << "Sucessfully created directory\n";
+                        }
+
+                        else {
+                            std::cout << "Directory already exists or other failure\n";
+                        }
+                    } */
+
+                    else if (command == "cd") {
+                        std::getline(std::cin, workingDirectory);
+
+                        if (std::filesystem::is_regular_file(workingDirectory)) {
+                            std::cout << "Input directory is a file, resetting working directory\n";
+                        }
+
+                        else if (std::filesystem::is_directory(workingDirectory)) {
+                            std::cout << workingDirectory << '\n';
+                        }
+
+                        else {
+                            std::cout << "Invalid path" << '\n';
                         }
                     }
 
