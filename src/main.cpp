@@ -35,7 +35,7 @@ class Program {
             char path[MAX_PATH];
             SHGetFolderPathA(NULL, CSIDL_DESKTOP, NULL, 0, path);
 
-            std::string folder = std::string(path) + "\\QuickNote";
+            std::string folder = std::string(path) + "\\shell";
                 
             CreateDirectoryA(folder.c_str(), NULL);
 
@@ -54,11 +54,11 @@ class Program {
 
                    if (command == "txt") {
                        text = "";
-                       std::cout << "Enter the name for your note\n";
+                       std::cout << "Enter the name for your txt\n";
                        std::cin >> fileName;
                        std::cin.clear();
                        std::ofstream File(folder + "\\" + fileName + ".txt");
-                       std::cout << "Enter your text\n";
+                       std::cout << "Enter your text\n"; 
                        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                        std::getline(std::cin, text);
 
@@ -179,9 +179,10 @@ class Program {
                            goto bandaid_fix;
                        }
                    }
+
+                   }
                 }
-            }
-         };
+            };
 
 int main() {
     Program main;
