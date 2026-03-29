@@ -36,6 +36,7 @@ class Program {
 
             struct {
                 std::string flags = "Flags\nYou can find a full list of flags nowhere currently (You get to read the code for that)\n";
+                std::string cd = "cd\nPARAMETERS {path}\nChanges the working directory\nAdditional Information\nNot fully implemented yet\n";
             } help2;
 
             char path[MAX_PATH];
@@ -117,24 +118,16 @@ class Program {
                         std::cin >> pageNumber;
 
                         if (pageNumber == 1) {
-                            std::cout << help.txt;
-                            std::cout << '\n';
-
-                            std::cout << help.list;
-                            std::cout << '\n';
-
-                            std::cout << help.read;
-                            std::cout << '\n';
-
-                            std::cout << help.write; // if anybody knows how to iterate over a struct make a pr I'm too stupid for that
-                            std::cout << '\n';
-
-                            std::cout << help.newFile;
-                            std::cout << '\n';
+                            std::cout << help.txt << '\n';
+                            std::cout << help.list << '\n';
+                            std::cout << help.read << '\n';
+                            std::cout << help.write << '\n'; // if anybody knows how to iterate over a struct make a pr I'm too stupid for that
+                            std::cout << help.newFile << '\n';
                         }
 
                         else if (pageNumber == 2) {
                             std::cout << help2.flags << '\n';
+                            std::cout << help2.cd << '\n';
                         }
 
                         else {
