@@ -133,7 +133,7 @@ class Program {
                             std::cout << help.flags << '\n';
                         }
 
-                        else { // else is mad at me
+                        else {
                             std::cout << "invalid page number\n"; // don't forget to enter 5 commands per page
                         }
                    }
