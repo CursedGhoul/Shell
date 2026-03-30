@@ -228,7 +228,7 @@ class Program {
                     }
 
                     else if (command == "exit") {
-                        std::cerr << "exiting\n";
+                        std::cout << "exiting\n";
                         running = false;
                     }
 
