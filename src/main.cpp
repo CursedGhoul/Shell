@@ -99,7 +99,7 @@ class Program {
                             std::ifstream readFile(folder + "\\" + readFilename + ".txt");
 
                             if (!readFile.is_open()) {
-                                std::cerr << "can't open file\n";
+                                std::cout << "can't open file\n";
                                 goto bandaid_fix;
                             }
 
